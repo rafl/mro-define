@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use Test::More tests => 3;
 
 {
     package ProtoMRO;
@@ -17,7 +18,8 @@ use warnings;
     my $method_name;
 
     sub invoke_method {
-        warn qq{invoking ${method_name}};
+        my ($caller, @args) = @_;
+        return qq{invoking ${method_name} on $caller with @args};
     }
 
     my $wiz = wizard
@@ -36,4 +38,7 @@ use warnings;
     use mro 'proto';
 }
 
-Bar->moo
+can_ok('Bar', 'moo');
+is(Bar->moo(1, 2, 3), 'invoking moo on Bar with 1 2 3');
+my $meth = Bar->can('kooh');
+is(Bar->$meth(1, 2, 3), 'invoking kooh on Bar with 1 2 3');

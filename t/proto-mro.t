@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 2;
 
 {
     package ProtoMRO;
@@ -40,5 +40,3 @@ use Test::More tests => 3;
 
 can_ok('Bar', 'moo');
 is(Bar->moo(1, 2, 3), 'invoking moo on Bar with 1 2 3');
-my $meth = Bar->can('kooh');
-is(Bar->$meth(1, 2, 3), 'invoking kooh on Bar with 1 2 3');

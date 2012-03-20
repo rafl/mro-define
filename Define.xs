@@ -11,13 +11,15 @@ resolve (pTHX_ HV *stash, U32 level)
     I32 count;
     SV *tmp, **callback;
     AV *ret;
+    STRLEN namelen;
     struct mro_meta *meta;
     const struct mro_alg *alg;
 
     meta = HvMROMETA (stash);
     alg = meta->mro_which;
 
-    if (!(callback = hv_fetch (mros, alg->name, alg->length, 0))) {
+    namelen = alg->kflags & HVhek_UTF8 ? -alg->length : alg->length;
+    if (!(callback = hv_fetch (mros, alg->name, namelen, 0))) {
         croak ("failed to find callback for mro %s", alg->name);
     }
 
@@ -76,10 +78,11 @@ register_mro (name, resolve_cb, kflags=0)
         Newxz (mro, 1, struct mro_alg);
         mro->name = strdup (name_pv);
         mro->length = name_len;
-        mro->kflags = kflags;
+        mro->kflags = kflags | (SvUTF8(name) ? HVhek_UTF8 : 0);
         mro->resolve = resolve;
     CODE:
-        if (!hv_store (mros, name_pv, name_len, newSVsv (resolve_cb), 0)) {
+        if (!hv_store (mros, name_pv, SvUTF8(name) ? -(I32)name_len : (I32)name_len,
+                       newSVsv (resolve_cb), 0)) {
             croak ("failed to store hash value");
         }
         Perl_mro_register (aTHX_ mro);

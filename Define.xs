@@ -7,6 +7,10 @@
 #  define UTF8fARG(u,l,p) newSVpvn_flags (p, l, SVs_TEMP | (u ? SVf_UTF8 : 0)
 #endif
 
+#ifndef cBOOL
+#  define cBOOL(cbool) ((cbool) ? (bool)1 : (bool)0)
+#endif
+
 static HV *mros;
 
 static AV *

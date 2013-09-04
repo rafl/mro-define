@@ -2,15 +2,11 @@
 !.gitignore
 Makefile*
 !Makefile.PL
-META.yml
+META.*
+MYMETA.*
 blib
 build
-inc
 pm_to_blib
-MANIFEST*
-!MANIFEST.SKIP
-Debian*
-README
 MRO-Define-*
 *.bs
 Define.*

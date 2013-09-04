@@ -9,6 +9,8 @@ use Test::More tests => 3;
     use MRO::Define;
     use Variable::Magic qw/wizard cast/;
 
+    { package Dummy }
+
     BEGIN {
         MRO::Define::register_mro(q/proto/, sub {
             return [qw/Dummy ProtoMRO/];

@@ -2,6 +2,11 @@
 #include "perl.h"
 #include "XSUB.h"
 
+#ifndef UTF8f
+#  define UTF8f SVf
+#  define UTF8fARG(u,l,p) newSVpvn_flags (p, l, SVs_TEMP | (u ? SVf_UTF8 : 0)
+#endif
+
 static HV *mros;
 
 static AV *
@@ -20,7 +25,8 @@ resolve (pTHX_ HV *stash, U32 level)
 
     namelen = alg->kflags & HVhek_UTF8 ? -alg->length : alg->length;
     if (!(callback = hv_fetch (mros, alg->name, namelen, 0))) {
-        croak ("failed to find callback for mro %s", alg->name);
+        croak ("failed to find callback for mro %"UTF8f,
+               cBOOL (alg->kflags & HVhek_UTF8), alg->length, alg->name);
     }
 
     ENTER;
